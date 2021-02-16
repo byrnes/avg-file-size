@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'avg-file-size'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=avg-file-size",
+                    "--package=avg-file-size"
+                ],
+                "filter": {
+                    "name": "avg-file-size",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'avg-file-size'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=avg-file-size",
+                    "--package=avg-file-size"
+                ],
+                "filter": {
+                    "name": "avg-file-size",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
