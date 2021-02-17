@@ -45,7 +45,7 @@ fn main() {
         }
     
         if human_readable {
-            println!("{}  {}", convert((avg_size)*1000f64), dir);
+            println!("{}  {}", convert((avg_size)*1000f64).replace(" ", ""), dir);
         } else {
             println!("{}  {}", avg_size, dir);
         }
