@@ -6,13 +6,11 @@ fn main() {
     let matches = App::new("avg-file-size")
         .version("0.1")
         .arg(Arg::with_name("path")
-                .short("p")
-                .long("path")
-                .value_name("path")
-                .help("directory to calculate avg file size in")
+                .value_name("DIRECTORIES")
+                .help("one or more directories to calculate avg file size in")
                 .takes_value(true)
                 .required(false)
-                .index(1))
+                .multiple(true))
         .arg(Arg::with_name("human-readable")
                 .short("h")
                 .long("human-readable")
@@ -28,23 +26,29 @@ fn main() {
                 .takes_value(false)
                 .required(false)).get_matches();
     
-    let path: &str = matches.value_of("path").unwrap_or("./");
+    let dirs: Vec<&str> = matches.values_of("path").unwrap_or_default().collect();
+
     let human_readable: bool = matches.is_present("human-readable");
     let round: bool = matches.is_present("round");
 
-    let pathbuf: PathBuf = PathBuf::from(path);
-    let (total_size, file_count) = avg_file_size(pathbuf);
-    let mut avg_size: f64 = total_size/file_count;
+    for dir in dirs.iter() {
+        let pathbuf: PathBuf = PathBuf::from(dir);
+        let (total_size, file_count) = avg_file_size(pathbuf);
 
-    if round {
-        avg_size = avg_size.round();
+        let mut avg_size: f64 = total_size/file_count;
+    
+        if round {
+            avg_size = avg_size.round();
+        }
+    
+        if human_readable {
+            println!("{}  {}", dir, convert((avg_size)*1000f64));
+        } else {
+            println!("{}  {}", dir, avg_size);
+        }
     }
 
-    if human_readable {
-        println!("{}  {}", path, convert((avg_size)*1000f64));
-    } else {
-        println!("{}  {}", path, avg_size);
-    }
+
 }
 
 fn avg_file_size(dir: PathBuf) -> (f64, f64) {

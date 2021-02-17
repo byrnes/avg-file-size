@@ -6,7 +6,7 @@ A command-line utility to calculate the average size of all files in a directory
 
 ```
 USAGE:
-    afs [FLAGS] [path]
+    afs [FLAGS] [DIRECTORIES]...
 
 FLAGS:
         --help              Prints help information
@@ -15,7 +15,7 @@ FLAGS:
     -V, --version           Prints version information
 
 ARGS:
-    <path>    directory to calculate avg file size in
+    <DIRECTORIES>...    one or more directories to calculate avg file size in
 ```
 
 ## Building
