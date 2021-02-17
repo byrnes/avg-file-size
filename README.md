@@ -11,7 +11,7 @@ USAGE:
 FLAGS:
         --help              Prints help information
     -h, --human-readable    output in human-readable format e.g. 10 kB, 5.1 gB
-    -r, --round             round to the nearest unit
+    -r, --round             round to the nearest kilobyte
     -V, --version           Prints version information
 
 ARGS:

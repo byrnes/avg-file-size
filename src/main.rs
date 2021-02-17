@@ -24,7 +24,7 @@ fn main() {
                 .short("r")
                 .long("round")
                 .value_name("round")
-                .help("round to the nearest unit")
+                .help("round to the nearest kilobyte")
                 .takes_value(false)
                 .required(false)).get_matches();
     
