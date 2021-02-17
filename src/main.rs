@@ -1,5 +1,6 @@
 use std::{fs, path::PathBuf};
 use clap::{App, Arg};
+use pretty_bytes::converter::convert;
 
 fn main() {
     let matches = App::new("avg-file-size")
@@ -11,12 +12,26 @@ fn main() {
                 .help("directory to calculate avg file size in")
                 .takes_value(true)
                 .required(false)
-                .index(1)).get_matches();
+                .index(1))
+        .arg(Arg::with_name("human-readable")
+                .short("h")
+                .long("human-readable")
+                .value_name("human-readable")
+                .help("output in human-readable format e.g. 10 kB, 5.1 gB")
+                .takes_value(false)
+                .required(false)).get_matches();
     
     let path: &str = matches.value_of("path").unwrap_or("./");
+    let human_readable: bool = matches.is_present("human-readable");
+
     let pathbuf: PathBuf = PathBuf::from(path);
     let (total_size, file_count) = avg_file_size(pathbuf);
-    println!("{}  {}", path, total_size/file_count);
+
+    if human_readable {
+        println!("{}  {}", path, convert((total_size/file_count)*1000f64));
+    } else {
+        println!("{}  {}", path, total_size/file_count);
+    }
 }
 
 fn avg_file_size(dir: PathBuf) -> (f64, f64) {
@@ -32,10 +47,9 @@ fn avg_file_size(dir: PathBuf) -> (f64, f64) {
                         file_count += 1 as f64;
                         total_size += (metadata.len()/1000 as u64) as f64;
                     } else if metadata.is_dir() {
-                        let (sub_file_count, sub_total_size) = avg_file_size(file.path());
+                        let (sub_total_size, sub_file_count) = avg_file_size(file.path());
                         file_count += sub_file_count;
                         total_size += sub_total_size;
-                        
                     }
                 }
             }
