@@ -19,18 +19,31 @@ fn main() {
                 .value_name("human-readable")
                 .help("output in human-readable format e.g. 10 kB, 5.1 gB")
                 .takes_value(false)
+                .required(false))
+        .arg(Arg::with_name("round")
+                .short("r")
+                .long("round")
+                .value_name("round")
+                .help("round to the nearest unit")
+                .takes_value(false)
                 .required(false)).get_matches();
     
     let path: &str = matches.value_of("path").unwrap_or("./");
     let human_readable: bool = matches.is_present("human-readable");
+    let round: bool = matches.is_present("round");
 
     let pathbuf: PathBuf = PathBuf::from(path);
     let (total_size, file_count) = avg_file_size(pathbuf);
+    let mut avg_size: f64 = total_size/file_count;
+
+    if round {
+        avg_size = avg_size.round();
+    }
 
     if human_readable {
-        println!("{}  {}", path, convert((total_size/file_count)*1000f64));
+        println!("{}  {}", path, convert((avg_size)*1000f64));
     } else {
-        println!("{}  {}", path, total_size/file_count);
+        println!("{}  {}", path, avg_size);
     }
 }
 
