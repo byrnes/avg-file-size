@@ -4,15 +4,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'avg-file-size'",
+            "name": "Debug executable 'afs'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=avg-file-size",
+                    "--bin=afs",
                     "--package=avg-file-size"
                 ],
                 "filter": {
-                    "name": "avg-file-size",
+                    "name": "afs",
                     "kind": "bin"
                 }
             },
@@ -22,16 +22,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'avg-file-size'",
+            "name": "Debug unit tests in executable 'afs'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=avg-file-size",
+                    "--bin=afs",
                     "--package=avg-file-size"
                 ],
                 "filter": {
-                    "name": "avg-file-size",
+                    "name": "afs",
                     "kind": "bin"
                 }
             },

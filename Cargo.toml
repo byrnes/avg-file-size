@@ -4,6 +4,12 @@ version = "0.1.0"
 authors = ["Connor Byrnes"]
 edition = "2018"
 license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://git.sr.ht/~byrnes/avg-file-size"
+
+[[bin]]
+name = "afs"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
