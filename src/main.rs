@@ -26,7 +26,10 @@ fn main() {
                 .takes_value(false)
                 .required(false)).get_matches();
     
-    let dirs: Vec<&str> = matches.values_of("path").unwrap_or_default().collect();
+    let mut dirs: Vec<&str> = matches.values_of("path").unwrap_or_default().collect();
+    if dirs.len() == 0 {
+        dirs.push("./");
+    }
 
     let human_readable: bool = matches.is_present("human-readable");
     let round: bool = matches.is_present("round");
@@ -42,9 +45,9 @@ fn main() {
         }
     
         if human_readable {
-            println!("{}  {}", dir, convert((avg_size)*1000f64));
+            println!("{}  {}", convert((avg_size)*1000f64), dir);
         } else {
-            println!("{}  {}", dir, avg_size);
+            println!("{}  {}", avg_size, dir);
         }
     }
 
