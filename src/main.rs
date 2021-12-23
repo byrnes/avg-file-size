@@ -44,8 +44,12 @@ fn main() {
     dirs.iter().for_each(|dir| {
         let pathbuf: PathBuf = PathBuf::from(dir);
         let (total_size, file_count) = avg_file_size(pathbuf);
-
-        let mut avg_size: f64 = total_size / file_count;
+	
+        let mut avg_size: f64 = 0.0;
+	
+	if file_count != 0.0 {
+            avg_size = total_size / file_count;
+	}
 
         if round {
             avg_size = avg_size.round();
