@@ -44,12 +44,12 @@ fn main() {
     dirs.iter().for_each(|dir| {
         let pathbuf: PathBuf = PathBuf::from(dir);
         let (total_size, file_count) = avg_file_size(pathbuf);
-	
+
         let mut avg_size: f64 = 0.0;
-	
-	if file_count != 0.0 {
-            avg_size = total_size / file_count;
-	}
+
+        if file_count > 0 {
+            avg_size = total_size / file_count as f64;
+        }
 
         if round {
             avg_size = avg_size.round();
@@ -58,7 +58,7 @@ fn main() {
         if human_readable {
             println!(
                 "{}  {}",
-                convert((avg_size) * 1000f64).replace(" ", ""),
+                convert(avg_size).replace(" ", ""),
                 dir
             );
         } else {
@@ -67,26 +67,32 @@ fn main() {
     });
 }
 
-fn avg_file_size(dir: PathBuf) -> (f64, f64) {
-    let mut file_count: f64 = 0.0;
+fn avg_file_size(dir: PathBuf) -> (f64, u64) {
+    let mut file_count: u64 = 0;
     let mut total_size: f64 = 0.0;
 
     if let Ok(files) = fs::read_dir(dir) {
-        files.for_each(|file| if let Ok(file) = file {
-            if let Ok(metadata) = file.metadata() {
-                if metadata.is_file() {
-                    //println!("{:?} : {}", file.path(), metadata.len());
-                    file_count += 1.0;
-                    total_size += (metadata.len() / 1000) as f64;
-                } else if metadata.is_dir() {
-                    let (sub_total_size, sub_file_count) = avg_file_size(file.path());
-                    file_count += sub_file_count;
-                    total_size += sub_total_size;
+        files.for_each(|file| {
+            if let Ok(file) = file {
+                match file.metadata() {
+                    Ok(metadata) => {
+                        if metadata.is_file() {
+                            file_count += 1;
+                            total_size += metadata.len() as f64;
+                        } else if metadata.is_dir() {
+                            let (sub_total_size, sub_file_count) = avg_file_size(file.path());
+                            file_count += sub_file_count;
+                            total_size += sub_total_size;
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("Warning: could not read metadata for {:?}: {}", file.path(), e);
+                    }
                 }
             }
         });
     }
     //println!("{} {}", total_size, file_count);
     
-    (total_size as f64, file_count as f64)
+    (total_size, file_count)
 }
