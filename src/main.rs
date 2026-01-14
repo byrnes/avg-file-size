@@ -41,14 +41,17 @@ fn main() {
     let human_readable: bool = matches.is_present("human-readable");
     let round: bool = matches.is_present("round");
 
-    dirs.iter().for_each(|dir| {
+    for dir in &dirs {
         let pathbuf: PathBuf = PathBuf::from(dir);
         let (total_size, file_count) = avg_file_size(pathbuf);
 
         let mut avg_size: f64 = 0.0;
 
         if file_count > 0 {
-            avg_size = total_size / file_count as f64;
+            #[allow(clippy::cast_precision_loss)]
+            {
+                avg_size = total_size / file_count as f64;
+            }
         }
 
         if round {
@@ -56,15 +59,11 @@ fn main() {
         }
 
         if human_readable {
-            println!(
-                "{}  {}",
-                convert(avg_size).replace(" ", ""),
-                dir
-            );
+            println!("{}  {dir}", convert(avg_size).replace(' ', ""));
         } else {
-            println!("{}  {}", avg_size, dir);
+            println!("{avg_size}  {dir}");
         }
-    });
+    }
 }
 
 fn avg_file_size(dir: PathBuf) -> (f64, u64) {
@@ -78,7 +77,10 @@ fn avg_file_size(dir: PathBuf) -> (f64, u64) {
                     Ok(metadata) => {
                         if metadata.is_file() {
                             file_count += 1;
-                            total_size += metadata.len() as f64;
+                            #[allow(clippy::cast_precision_loss)]
+                            {
+                                total_size += metadata.len() as f64;
+                            }
                         } else if metadata.is_dir() {
                             let (sub_total_size, sub_file_count) = avg_file_size(file.path());
                             file_count += sub_file_count;
@@ -86,7 +88,7 @@ fn avg_file_size(dir: PathBuf) -> (f64, u64) {
                         }
                     }
                     Err(e) => {
-                        eprintln!("Warning: could not read metadata for {:?}: {}", file.path(), e);
+                        eprintln!("Warning: could not read metadata for {}: {e}", file.path().display());
                     }
                 }
             }
